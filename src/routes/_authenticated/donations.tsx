@@ -45,23 +45,25 @@ function DonationsPage() {
   const [open, setOpen] = useState(false);
 
   const donations = useQuery({
-    queryKey: ["donations"],
+    queryKey: ["donations", user?.id],
+    enabled: !!user,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("donations")
         .select("*")
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },
   });
 
-  const names = useQuery({
-    queryKey: ["profile-names"],
+  const totals = useQuery({
+    queryKey: ["donation-totals"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("profiles").select("id, full_name");
+      const { data, error } = await supabase.rpc("donation_totals");
       if (error) throw error;
-      return data;
+      return data?.[0] ?? { total: 0, contributions: 0 };
     },
   });
 
