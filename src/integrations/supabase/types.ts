@@ -14,16 +14,203 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      donations: {
+        Row: {
+          amount: number
+          cause: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          cause?: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          cause?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      event_rsvps: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_rsvps_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string
+          event_date: string
+          id: string
+          location: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string
+          event_date: string
+          id?: string
+          location?: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string
+          event_date?: string
+          id?: string
+          location?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      jobs: {
+        Row: {
+          company: string
+          created_at: string
+          description: string
+          id: string
+          is_open: boolean
+          job_type: string
+          location: string
+          posted_by: string
+          title: string
+        }
+        Insert: {
+          company: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_open?: boolean
+          job_type?: string
+          location?: string
+          posted_by: string
+          title: string
+        }
+        Update: {
+          company?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_open?: boolean
+          job_type?: string
+          location?: string
+          posted_by?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          batch_year: number | null
+          bio: string | null
+          branch: string | null
+          company: string | null
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          job_title: string | null
+          location: string | null
+          updated_at: string
+        }
+        Insert: {
+          batch_year?: number | null
+          bio?: string | null
+          branch?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id: string
+          job_title?: string | null
+          location?: string | null
+          updated_at?: string
+        }
+        Update: {
+          batch_year?: number | null
+          bio?: string | null
+          branch?: string | null
+          company?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          job_title?: string | null
+          location?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "alumni"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +337,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "alumni"],
+    },
   },
 } as const
