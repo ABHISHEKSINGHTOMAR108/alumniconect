@@ -201,6 +201,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      donation_totals: {
+        Args: never
+        Returns: {
+          contributions: number
+          total: number
+        }[]
+      }
+      event_rsvp_counts: {
+        Args: never
+        Returns: {
+          attendees: number
+          event_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
