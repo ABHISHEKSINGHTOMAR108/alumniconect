@@ -14,7 +14,10 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDirectoryRouteImport } from './routes/_authenticated/directory'
+import { Route as AuthenticatedDonationsRouteImport } from './routes/_authenticated/donations'
 import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated/events'
+import { Route as AuthenticatedJobsRouteImport } from './routes/_authenticated/jobs'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,9 +43,24 @@ const AuthenticatedDirectoryRoute = AuthenticatedDirectoryRouteImport.update({
   path: '/directory',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDonationsRoute = AuthenticatedDonationsRouteImport.update({
+  id: '/donations',
+  path: '/donations',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedEventsRoute = AuthenticatedEventsRouteImport.update({
   id: '/events',
   path: '/events',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedJobsRoute = AuthenticatedJobsRouteImport.update({
+  id: '/jobs',
+  path: '/jobs',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
@@ -51,14 +69,20 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/directory': typeof AuthenticatedDirectoryRoute
+  '/donations': typeof AuthenticatedDonationsRoute
   '/events': typeof AuthenticatedEventsRoute
+  '/jobs': typeof AuthenticatedJobsRoute
+  '/profile': typeof AuthenticatedProfileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/directory': typeof AuthenticatedDirectoryRoute
+  '/donations': typeof AuthenticatedDonationsRoute
   '/events': typeof AuthenticatedEventsRoute
+  '/jobs': typeof AuthenticatedJobsRoute
+  '/profile': typeof AuthenticatedProfileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -67,13 +91,32 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/directory': typeof AuthenticatedDirectoryRoute
+  '/_authenticated/donations': typeof AuthenticatedDonationsRoute
   '/_authenticated/events': typeof AuthenticatedEventsRoute
+  '/_authenticated/jobs': typeof AuthenticatedJobsRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/directory' | '/events'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/directory'
+    | '/donations'
+    | '/events'
+    | '/jobs'
+    | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/directory' | '/events'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/directory'
+    | '/donations'
+    | '/events'
+    | '/jobs'
+    | '/profile'
   id:
     | '__root__'
     | '/'
@@ -81,7 +124,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dashboard'
     | '/_authenticated/directory'
+    | '/_authenticated/donations'
     | '/_authenticated/events'
+    | '/_authenticated/jobs'
+    | '/_authenticated/profile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -127,11 +173,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDirectoryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/donations': {
+      id: '/_authenticated/donations'
+      path: '/donations'
+      fullPath: '/donations'
+      preLoaderRoute: typeof AuthenticatedDonationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/events': {
       id: '/_authenticated/events'
       path: '/events'
       fullPath: '/events'
       preLoaderRoute: typeof AuthenticatedEventsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/jobs': {
+      id: '/_authenticated/jobs'
+      path: '/jobs'
+      fullPath: '/jobs'
+      preLoaderRoute: typeof AuthenticatedJobsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
   }
@@ -140,13 +207,19 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDirectoryRoute: typeof AuthenticatedDirectoryRoute
+  AuthenticatedDonationsRoute: typeof AuthenticatedDonationsRoute
   AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
+  AuthenticatedJobsRoute: typeof AuthenticatedJobsRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDirectoryRoute: AuthenticatedDirectoryRoute,
+  AuthenticatedDonationsRoute: AuthenticatedDonationsRoute,
   AuthenticatedEventsRoute: AuthenticatedEventsRoute,
+  AuthenticatedJobsRoute: AuthenticatedJobsRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
