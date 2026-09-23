@@ -149,25 +149,25 @@ function DonationsPage() {
           <p className="mt-3 font-display text-3xl font-semibold md:text-4xl">{inr(total)}</p>
         )}
         <p className="mt-2 text-sm text-muted-foreground">
-          {(donations.data ?? []).length} contributions recorded
+          {contributions} contributions recorded
         </p>
       </div>
 
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-        Past contributions
+        Your contributions
       </h2>
       {donations.isLoading ? (
         <Skeleton className="h-32 w-full rounded-xl" />
       ) : (donations.data ?? []).length === 0 ? (
         <div className="panel p-8 text-center text-sm text-muted-foreground">
-          No contributions recorded yet.
+          You have not recorded a contribution yet.
         </div>
       ) : (
         <div className="space-y-2">
           {(donations.data ?? []).map((d) => (
             <div key={d.id} className="panel flex items-center justify-between gap-4 p-4">
               <div className="min-w-0">
-                <p className="truncate font-medium">{nameFor(d.user_id)}</p>
+                <p className="truncate font-medium">{d.cause}</p>
                 <p className="text-xs text-muted-foreground">
                   {new Date(d.created_at).toLocaleDateString()}
                 </p>
