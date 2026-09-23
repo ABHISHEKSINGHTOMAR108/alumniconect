@@ -88,9 +88,8 @@ function DonationsPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const total = (donations.data ?? []).reduce((sum, d) => sum + Number(d.amount), 0);
-  const nameFor = (id: string) =>
-    (names.data ?? []).find((p) => p.id === id)?.full_name || "Alumni member";
+  const total = Number(totals.data?.total ?? 0);
+  const contributions = Number(totals.data?.contributions ?? 0);
 
   return (
     <div>
