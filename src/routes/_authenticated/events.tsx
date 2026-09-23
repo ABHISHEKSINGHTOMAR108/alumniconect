@@ -50,12 +50,25 @@ function EventsPage() {
     },
   });
 
-  const rsvps = useQuery({
-    queryKey: ["event_rsvps"],
+  const counts = useQuery({
+    queryKey: ["event_rsvp_counts"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("event_rsvps").select("event_id, user_id");
+      const { data, error } = await supabase.rpc("event_rsvp_counts");
       if (error) throw error;
-      return data;
+      return data ?? [];
+    },
+  });
+
+  const myRsvps = useQuery({
+    queryKey: ["my_rsvps", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("event_rsvps")
+        .select("event_id")
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return data ?? [];
     },
   });
 
