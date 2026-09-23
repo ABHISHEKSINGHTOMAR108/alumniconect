@@ -83,6 +83,7 @@ function DonationsPage() {
       toast.success("Thank you — contribution recorded");
       setOpen(false);
       queryClient.invalidateQueries({ queryKey: ["donations"] });
+      queryClient.invalidateQueries({ queryKey: ["donation-totals"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
     },
     onError: (e: Error) => toast.error(e.message),
