@@ -76,7 +76,7 @@ function EventsPage() {
     const channel = supabase
       .channel("rsvp-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "event_rsvps" }, () => {
-        queryClient.invalidateQueries({ queryKey: ["event_rsvps"] });
+        queryClient.invalidateQueries({ queryKey: ["event_rsvp_counts"] });
       })
       .subscribe();
     return () => {
@@ -122,13 +122,16 @@ function EventsPage() {
         if (error) throw error;
       }
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["event_rsvps"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["event_rsvp_counts"] });
+      queryClient.invalidateQueries({ queryKey: ["my_rsvps"] });
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const countFor = (id: string) => (rsvps.data ?? []).filter((r) => r.event_id === id).length;
-  const isGoing = (id: string) =>
-    (rsvps.data ?? []).some((r) => r.event_id === id && r.user_id === user?.id);
+  const countFor = (id: string) =>
+    Number((counts.data ?? []).find((c) => c.event_id === id)?.attendees ?? 0);
+  const isGoing = (id: string) => (myRsvps.data ?? []).some((r) => r.event_id === id);
 
   return (
     <div>
