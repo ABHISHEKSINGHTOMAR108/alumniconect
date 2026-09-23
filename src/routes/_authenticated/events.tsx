@@ -50,12 +50,25 @@ function EventsPage() {
     },
   });
 
-  const rsvps = useQuery({
-    queryKey: ["event_rsvps"],
+  const counts = useQuery({
+    queryKey: ["event_rsvp_counts"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("event_rsvps").select("event_id, user_id");
+      const { data, error } = await supabase.rpc("event_rsvp_counts");
       if (error) throw error;
-      return data;
+      return data ?? [];
+    },
+  });
+
+  const myRsvps = useQuery({
+    queryKey: ["my_rsvps", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("event_rsvps")
+        .select("event_id")
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return data ?? [];
     },
   });
 
@@ -63,7 +76,7 @@ function EventsPage() {
     const channel = supabase
       .channel("rsvp-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "event_rsvps" }, () => {
-        queryClient.invalidateQueries({ queryKey: ["event_rsvps"] });
+        queryClient.invalidateQueries({ queryKey: ["event_rsvp_counts"] });
       })
       .subscribe();
     return () => {
@@ -109,13 +122,16 @@ function EventsPage() {
         if (error) throw error;
       }
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["event_rsvps"] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["event_rsvp_counts"] });
+      queryClient.invalidateQueries({ queryKey: ["my_rsvps"] });
+    },
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const countFor = (id: string) => (rsvps.data ?? []).filter((r) => r.event_id === id).length;
-  const isGoing = (id: string) =>
-    (rsvps.data ?? []).some((r) => r.event_id === id && r.user_id === user?.id);
+  const countFor = (id: string) =>
+    Number((counts.data ?? []).find((c) => c.event_id === id)?.attendees ?? 0);
+  const isGoing = (id: string) => (myRsvps.data ?? []).some((r) => r.event_id === id);
 
   return (
     <div>

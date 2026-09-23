@@ -45,23 +45,25 @@ function DonationsPage() {
   const [open, setOpen] = useState(false);
 
   const donations = useQuery({
-    queryKey: ["donations"],
+    queryKey: ["donations", user?.id],
+    enabled: !!user,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("donations")
         .select("*")
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       if (error) throw error;
       return data;
     },
   });
 
-  const names = useQuery({
-    queryKey: ["profile-names"],
+  const totals = useQuery({
+    queryKey: ["donation-totals"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("profiles").select("id, full_name");
+      const { data, error } = await supabase.rpc("donation_totals");
       if (error) throw error;
-      return data;
+      return data?.[0] ?? { total: 0, contributions: 0 };
     },
   });
 
@@ -81,14 +83,14 @@ function DonationsPage() {
       toast.success("Thank you — contribution recorded");
       setOpen(false);
       queryClient.invalidateQueries({ queryKey: ["donations"] });
+      queryClient.invalidateQueries({ queryKey: ["donation-totals"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard-stats"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const total = (donations.data ?? []).reduce((sum, d) => sum + Number(d.amount), 0);
-  const nameFor = (id: string) =>
-    (names.data ?? []).find((p) => p.id === id)?.full_name || "Alumni member";
+  const total = Number(totals.data?.total ?? 0);
+  const contributions = Number(totals.data?.contributions ?? 0);
 
   return (
     <div>
@@ -148,25 +150,25 @@ function DonationsPage() {
           <p className="mt-3 font-display text-3xl font-semibold md:text-4xl">{inr(total)}</p>
         )}
         <p className="mt-2 text-sm text-muted-foreground">
-          {(donations.data ?? []).length} contributions recorded
+          {contributions} contributions recorded
         </p>
       </div>
 
       <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-        Past contributions
+        Your contributions
       </h2>
       {donations.isLoading ? (
         <Skeleton className="h-32 w-full rounded-xl" />
       ) : (donations.data ?? []).length === 0 ? (
         <div className="panel p-8 text-center text-sm text-muted-foreground">
-          No contributions recorded yet.
+          You have not recorded a contribution yet.
         </div>
       ) : (
         <div className="space-y-2">
           {(donations.data ?? []).map((d) => (
             <div key={d.id} className="panel flex items-center justify-between gap-4 p-4">
               <div className="min-w-0">
-                <p className="truncate font-medium">{nameFor(d.user_id)}</p>
+                <p className="truncate font-medium">{d.cause}</p>
                 <p className="text-xs text-muted-foreground">
                   {new Date(d.created_at).toLocaleDateString()}
                 </p>
