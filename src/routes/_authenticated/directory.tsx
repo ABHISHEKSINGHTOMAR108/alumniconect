@@ -39,7 +39,7 @@ function Directory() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("*")
+        .select("id, full_name, batch_year, branch, company, job_title, location, bio")
         .order("full_name", { ascending: true });
       if (error) throw error;
       return data;

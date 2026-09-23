@@ -25,7 +25,7 @@ function useStats() {
         supabase.from("profiles").select("id", { count: "exact", head: true }),
         supabase.from("events").select("id", { count: "exact", head: true }),
         supabase.from("jobs").select("id", { count: "exact", head: true }).eq("is_open", true),
-        supabase.from("donations").select("amount"),
+        supabase.rpc("donation_totals"),
         supabase
           .from("events")
           .select("*")
@@ -34,7 +34,7 @@ function useStats() {
           .limit(1)
           .maybeSingle(),
       ]);
-      const total = (donations.data ?? []).reduce((sum, d) => sum + Number(d.amount), 0);
+      const total = Number(donations.data?.[0]?.total ?? 0);
       return {
         alumni: alumni.count ?? 0,
         events: events.count ?? 0,
